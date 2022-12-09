@@ -1,0 +1,8 @@
+#request constants
+string index
+#待书写字符
+string wrod
+---
+#response constants
+string index
+bool status

@@ -1,0 +1,749 @@
+syntax = "proto2";
+package middle_layer_pb;
+option java_package = "com.kotei.common.protocol";
+option java_outer_classname ="MiddleLayer";
+
+message Query {
+  required int64 id = 1;
+  required string questioner = 2;
+
+  repeated string question = 3;
+}
+
+message Answer {
+  required int64 id = 1;
+  required string questioner = 2;
+  required string answerer = 3;
+
+  repeated string solution = 4;
+}
+
+message Empty {
+  optional int32 id = 1;
+}
+
+enum ErrorCode {
+    kNoError = 0x00;    //正确返回
+    kInvalidError = 0x02;   //异常返回
+    kUnknownError = 0x03; //未知返回
+  }
+
+// A point in the map reference frame.
+message PointENU {
+  optional double x = 1 [default = nan];  // East from the origin, in meters.
+  optional double y = 2 [default = nan];  // North from the origin, in meters.
+  optional double z = 3 [default = 0.0];  // Up from the WGS-84 ellipsoid, in meters.
+}
+
+// A point in the global reference frame.
+message PointLLH {
+  optional double lon = 1 [default = nan];  // Longitude in degrees, ranging from -180 to 180.
+  optional double lat = 2 [default = nan];  // Latitude in degrees, ranging from -90 to 90.
+  optional double height = 3 [default = 0.0];  // WGS-84 ellipsoid height in meters.
+  optional double heading = 4 [default = 0.0];
+}
+
+// A general 2D point.
+message Point2D {
+  optional double x = 1 [default = nan];
+  optional double y = 2 [default = nan];
+}
+
+// A general 3D point.
+message Point3D {
+  optional double x = 1 [default = nan];
+  optional double y = 2 [default = nan];
+  optional double z = 3 [default = nan];
+}
+
+// A unit quaternion that represents a spatial rotation. 
+message Quaternion {
+  optional double qx = 1 [default = nan];
+  optional double qy = 2 [default = nan];
+  optional double qz = 3 [default = nan];
+  optional double qw = 4 [default = nan];
+}
+
+// IMU加速信息
+message ImuAccelMessage {
+  required float accel_x = 1;
+  required float accel_y = 2;
+  required float accel_z = 3;
+}
+
+// IMU陀螺信息
+message ImuGyroMessage {
+  required float gyro_x = 1;
+  required float gyro_y = 2;
+  required float gyro_z = 3;
+}
+
+// IMU欧拉信息
+message ImuEulerMessage {
+  required float yaw = 1;
+  required float pitch = 2;
+  required float roll = 3;
+}
+
+// 机器人状态请求
+message RobotCoreStateReq {
+  required string id = 1;   //机器标识
+}
+
+// 机器人状态
+message RobotCoreState {
+  enum AgxVehicleState {
+    VEHICLE_STATE_NORMAL = 0x00;    //系统正常
+    VEHICLE_STATE_ESTOP = 0x01;     //紧急停车模式
+    VEHICLE_STATE_EXCEPTION = 0x02;  //系统异常
+  }
+  enum AgxControlMode {
+    CONTROL_MODE_RC = 0x00;   //遥控模式
+    CONTROL_MODE_CAN = 0x01;  // CAN指令控制模式
+    CONTROL_MODE_UART = 0x02;  //串口控制模式
+  }
+  enum AgxRcSwitchState {
+    RC_SWITCH_UP = 0;
+    RC_SWITCH_MIDDLE = 1;
+    RC_SWITCH_DOWN = 2;
+  }
+  message SystemStateMessage {
+    optional AgxVehicleState vehicle_state = 1; //机器状态
+    optional AgxControlMode control_mode = 2; //机器模式
+    optional float battery_voltage = 3; //电池电压
+    optional int32 error_code = 4;
+  }
+  message MotionStateMessage {
+    optional float linear_velocity = 1;     //线速度
+    optional float angular_velocity = 2;  //角速度
+    optional float lateral_velocity = 3;    //横向速度
+    optional float steering_angle = 4;    //方向盘角度
+  }
+  message RcStateMessage {
+    optional AgxRcSwitchState swa = 1;
+    optional AgxRcSwitchState swb = 2;
+    optional AgxRcSwitchState swc = 3;
+    optional AgxRcSwitchState swd = 4;
+    optional int32 stick_right_v = 5;
+    optional int32 stick_right_h = 6;
+    optional int32 stick_left_v = 7;
+    optional int32 stick_left_h = 8;
+    optional int32 var_a = 9;
+  }
+  message BmsBasicMessage{
+  optional uint32 battery_soc=1;  //电池soc
+  optional uint32 battery_soh=2;  //电池soh
+  optional float voltage=3;        //电压
+  optional float current=4;        //电流
+ optional  float temperature=5;    //温度
+} 
+message OdometryMessage {
+ optional float left_wheel=1;  //里程计：mm
+  optional float right_wheel=2;//里程计：mm
+} 
+
+  required string id = 1;   //机器标识
+  required int64 timestamp = 2;    //采集时间
+  optional SystemStateMessage system_state = 3; //系统状态
+  optional MotionStateMessage motion_state = 4; //运动状态
+  optional RcStateMessage rc_state = 5;   //遥控信息
+  optional BmsBasicMessage bms_state = 6;  //电池管理信息
+  optional OdometryMessage odom_state = 7;//里程计信息
+}
+
+
+// 机器人状态返回
+message RobotCoreStateRes{
+  required RobotCoreState state = 1; //机器人状态
+}
+
+// 机器人状态通知
+message  RobotCoreStateNotify{
+  required RobotCoreState state = 1; //机器人状态
+}
+
+// App登录请求
+message AppLoginReq{
+  required string id = 1;   //机器标识
+}
+
+// App登录返回
+message AppLoginRes{
+  optional ErrorCode code = 1;    //返回结果
+}
+
+// 机器人登录请求
+message RobotLoginReq{
+  required string id = 1;   //机器标识
+}
+
+// 机器人登录返回
+message RobotLoginRes{
+  optional ErrorCode code = 1;    //返回结果
+}
+
+// 云登录请求
+message CloudLoginReq{
+  required string id = 1;   //middle layer server标识
+}
+
+// 云登录返回
+message CloudLoginRes{
+  optional ErrorCode code = 1;    //返回结果
+}
+
+//激光测量结果
+message LaserResult {
+  required double height = 1;  //激光测距 高度测量
+};
+
+message RtkResult {
+  optional PointENU utm_result = 1;
+  optional PointLLH gnss_result = 2;
+};
+
+//Rtk原始数据
+message RtkDataSource {
+  optional bytes data = 1;  //原始数据
+}
+
+// 传感器信息
+message SensorInfoNotify{
+  required string id = 1;   //机器标识
+  required int64 timestamp = 2; //采集时间
+  optional ImuAccelMessage imu_accel = 3; //加速信息
+  optional ImuGyroMessage imu_gyro = 4; //陀螺信息
+  optional ImuEulerMessage imu_euler = 5; //欧拉信息
+  optional PointLLH gnss = 6; //定位信息
+  optional RtkDataSource rtk = 7; //rtk源信息
+}
+
+// 测量结果
+message MeasureResultNotify{
+  required string id = 1;   //机器标识
+  required int64 timestamp = 2; //采集时间
+  message Point {
+    required StakeDto stake_dto = 1; // 桩号信息
+    required PointLLH rtk_res = 2;  // 实测坐标
+    optional PointLLH pl = 3;  // 二次计算设计坐标
+    required string task_code = 4; // 任务主键id （DeviceTask中的参数）
+  }
+  repeated Point pos_list = 3; //所有结果
+}
+
+//任务状态
+message  TaskState{
+    enum enState {
+    TASK_STATE_INVALID = 0xFF;    //状态异常
+    TASK_STATE_NORMAL = 0x00;    //状态正常
+    TASK_STATE_PLAY = 0x01;    //状态播放
+    TASK_STATE_PAUSE = 0x02;    //状态暂停
+    TASK_STATE_STOP = 0x03;    //状态停止
+    TASK_STATE_UNKNOWN = 0X0F; //状态未知
+  }
+  required enState state = 1; //任务状态
+  optional string task_code = 2; // 任务编号
+  optional StakeDto stake_dto = 3; // 桩号信息
+}
+
+//任务状态通知
+message  TaskStateNotify {
+  required string id = 1;   //机器标识
+  required int64 timestamp = 2; //采集时间
+  required TaskState state = 3; //任务状态
+}
+
+// 目标轨迹
+message TargetTrackNotify {
+  required string id = 1;   //机器标识
+  required int64 timestamp = 2; //采集时间
+  message Point {
+    required Point2D pt_x_y = 1;  //X Y 坐标
+    required double pt_h = 2; //航行角
+    required double pt_c = 3; //曲率
+    required double pt_s = 4; //轨迹长度
+  }
+  optional Point curr_pos = 3; //当前位置
+  repeated Point pos_list = 4;  //轨迹坐标
+}
+// Rtk操作请求
+message RtkOperationCmdReq{
+  enum enOperationType {
+    OPERATION_TYPE_INVALID = 0xFF;    //无效操作
+    OPERATION_TYPE_CONNECT = 0x00;    //连接操作
+    OPERATION_TYPE_DISCONNECT = 0x01;    //断开操作
+  }
+  required string id = 1;    //机器标识
+  required enOperationType type = 2;
+}
+
+// Rtk操作返回
+message RtkOperationCmdRes{
+  required ErrorCode code = 1;    //返回结果
+}
+
+message RtkOffsetInfo {
+  required PointLLH pos = 1;  //校准点坐标
+  required string name = 2; //校准点名称
+  required string level = 3; //校准点名称
+  required double offset_x = 4; //x偏差
+  required double offset_y = 5; //y偏差
+  required double offset_z = 6; //z偏差
+}
+
+enum WorkType {
+        PUT_MID_LINE = 0x01;  // 测中线
+        PUT_SIDE_LINE = 0x02;  // 测边线
+        PUT_LEVELLING_PARAM = 0x03; // 测抄平
+        PUT_LANE_LINE = 0x04; // 测行车道线
+        PUT_CROSS_SECTION = 0x05; // 测土方量
+        DRAW_STANDARD_SQUARE = 0x06; // 画标准方格
+        DRAW_MID_LINE_PARAM = 0x07; // 画中线
+        DRAW_SIDE_LINE_PARAM = 0x08; // 画边线
+        DRAW_STAKES_HELP_PARAM = 0x09; // 放桩辅助
+        DRAW_LANE_LINE = 0x10; // 画行车道线
+}
+// 任务下发
+message WorkMessageIssued {
+    required string id = 1;   // app下发的话需要app设备的id
+    required DeviceTask device_task = 2; // 任务对象
+    required WorkType work_type = 3;    //工作任务类型  0x01:是获得放边线参数对象，0x02：放中线参数对象，0x03：放标准方格参数
+    required RtkOffsetInfo rtk_offset_info = 4; //rtk偏差信息
+    repeated StakeDto stake_dto_list = 5;  //桩号信息集合
+    optional PutSideLineParam put_side_line_param = 6;    //放边线参数
+    optional DrawSideLineParam draw_side_line_param = 7;    //画边线参数
+    optional PutMidLineParam put_mid_line_param = 8;    //放中线参数
+    optional DrawMidLineParam draw_mid_line_param = 9;    //画边线参数
+    optional DrawStandardSquareParam draw_standard_square_param = 10;    //画标准方格参数
+    optional PutLevellingParam put_levelling_param = 11;    //测抄平参数
+    optional PutLaneLineParam put_lane_line_param = 12;    //测行车道线
+    optional DrawStakesHelpParam draw_stakes_help_param = 13;    //放桩辅助
+    optional PutCrossSectionParam put_cross_section_param = 14; // 测土方量
+}
+
+
+message WorkMessageIssuedRes {
+  required ErrorCode code = 1;    //返回结果
+  optional DeviceTask device_task = 2; // 任务对象
+}
+
+// 任务对象
+message DeviceTask {
+    required string task_code = 1; // 任务主键id，需要在测量结果携带回来
+    required string start_stake = 3; // 起点桩号
+    required string end_stake = 4; // 终点桩号
+    required int64 start_time = 5; // 任务开始时间 时间戳
+    required int64 end_time = 6; // 任务结束时间 时间戳
+    required int32 status = 7; // 任务状态 0:未开始 1:进行中 2:已完成 3:失败
+}
+
+// 桩号信息
+message StakeDto {
+    required string stake = 1; // 桩号
+    required double x = 4; // 坐标X
+    required double y = 5; // 坐标Y
+    required double Z = 6; // 高程
+    required double ground = 8; // 地面高程
+    required double angle = 9; // 方位角
+}
+
+// 桩号信息集合
+message StakeDtoList {
+  repeated StakeDto stake_dto_list = 7;  //桩号信息集合
+}
+
+message StakeInfo {
+  repeated StakeDto stake = 1;  //桩号集合
+  repeated string stop_line = 2;  //停车线
+}
+
+// 桩号请求
+message StakeDtoListReq {
+  required int32 section_index = 1; //片段索引
+  required WorkType work_type = 2; //任务类型
+  repeated StakeInfo stake_info = 3;
+}
+
+// 桩号返回
+message StakeDtoListRes {
+  required ErrorCode code = 1;    //返回结果
+  required int32 section_index = 2; //片段索引
+}
+
+
+// 测边线参数
+message PutSideLineParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required int32 safety_offset = 4; // 安全偏距
+}
+
+// 测中线参数
+message PutMidLineParam{
+     required int32 lcSpacing = 1; // 里程间距
+     required int32 measuringSpacing = 2; // 测量间距
+}
+
+// 测抄平参数
+message PutLevellingParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required int32 levelling_num = 4; // 第几层，从96区顶往下，0123456
+    required double press_coefficient = 5; // 压实系数 如1.20,1.05
+    required double point_density = 6; // 测点密度
+    required double Layer_thickness = 7; // 层厚
+    required double total_thickness = 8; // 路层总厚度
+    required int32 safety_offset = 9; // 安全偏距
+}
+
+// 测车道线参数
+message PutLaneLineParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required int32 lane_num = 4; // 第几车道
+}
+
+// 测土方量参数
+message PutCrossSectionParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required double point_density = 4; // 测点密度
+}
+
+
+// 画标准方格参数
+message DrawStandardSquareParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required double square_length = 4; // 方格长
+    required double square_width = 5; // 方格宽
+    required int32 square_row = 6; // 方格行数
+    required int32 square_columns = 7; // 方格列数
+    required double require_earthwork = 8; // 需求方量
+    required double fill_dig_height = 9; // 填挖高度
+    required int32 safety_offset = 10; // 安全偏距
+}
+
+// 画边线参数
+message DrawSideLineParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required int32 safety_offset = 4; // 安全偏距
+}
+
+// 画中线参数
+message DrawMidLineParam{
+    required int32 lcSpacing = 1; // 里程间距
+    required int32 measuringSpacing = 2; // 测量间距
+}
+
+// 放桩辅助参数
+message DrawStakesHelpParam{
+    required int32 lc_spacing = 1; // 里程间距
+    required int32 measuring_spacing = 2; // 测量间距
+    required int32 side = 3; // 边线侧位 0-左侧 1-右侧
+    required int32 levelling_num = 4; // 第几层，从96区顶往下，0123456
+    required double press_coefficient = 5; // 压实系数 如1.20,1.05
+    required double Layer_thickness = 6; // 层厚
+    required double total_thickness = 7; // 路层总厚度
+}
+
+
+
+// 任务结束通知
+message WorkEndNotify{
+     required string id = 1;   // 设备id
+     required DeviceTask device_task = 2; // 任务对象
+}
+
+ enum enOperationType {
+    OPERATION_TYPE_INVALID = 0xFF;    //无效操作
+    OPERATION_TYPE_PLAY = 0x00;    //播放操作
+    OPERATION_TYPE_PAUSE = 0x01;    //暂停操作
+    OPERATION_TYPE_STOP = 0x02;    //停止操作
+    OPERATION_TYPE_ADD_MATERIAL = 0x03;    //加料操作
+  }
+
+//操作请求
+message OperationRobotReq {
+  required string id = 1;   // 设备id
+  required enOperationType type = 2;  //操作类型
+}
+
+//操作返回
+message OperationRobotRes {
+  optional ErrorCode code = 1;    //返回结果
+  optional enOperationType type = 2;  //操作类型
+}
+
+// 二次计算-根据实时坐标计算边桩位置请求
+message CalSideStakeReq {
+  required string id = 1;   // 设备id
+  required string task_code = 2; // 任务主键id
+  required StakeDto stake_dto = 3; // 中桩坐标信息
+  required PointLLH pt = 4;  // 实时坐标
+  required int32 side = 5; // 边桩位置:0-左侧,1-右侧
+}
+
+// 二次计算-根据实时坐标计算边桩位置返回
+message CalSideStakeRes {
+  required string id = 1;   // 设备id
+  optional ErrorCode code = 2;    //返回结果
+  required StakeDto stake_dto = 3; // 边桩坐标信息
+}
+
+// 二次计算-根据实时坐标计算边桩位置请求(集合)
+message CalSideStakeListReq {
+  required string id = 1;   // 设备id
+  required string task_code = 2; // 任务主键id
+  repeated StakeDto stake_dto_list = 3; // 中桩坐标信息
+  required PointLLH pt = 4;  // 实时坐标
+  required int32 side = 5; // 边桩位置:0-左侧,1-右侧
+  required int32 safety_offset = 6; // 安全偏距
+}
+
+// 二次计算-根据实时坐标计算边桩位置返回(集合)
+message CalSideStakeListRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDto stake_dto_list = 3; // 边桩坐标信息
+}
+
+// 二次计算-测车道线返回结果
+message CalLaneStakeListRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDto stake_dto_list = 3; // 行车道坐标信息
+}
+
+// 二次计算-测车道线请求
+message CalLaneStakeListReq {
+    required string id = 1;   // 设备id
+    required string task_code = 2; // 任务主键id
+    repeated StakeDto stake_dto_list = 3; // 中桩坐标信息
+    required PutLaneLineParam put_lane_line_param = 4; // 测车道线参数
+}
+
+// 二次计算-测土方量桩点信息（二维数组）请求
+message CalCrossSectionStakeArrayReq {
+    required string id = 1;   // 设备id
+    required string task_code = 2; // 任务主键id
+    required PutCrossSectionParam put_cross_section_param = 3; // 测抄平参数
+    required PointLLH pt = 4;  // 实时坐标
+    repeated StakeDto stake_dto_list = 5; // 中桩坐标信息
+
+}
+
+// 二次计算-测土方量桩点信息（二维数组）返回
+message CalCrossSectionStakeArrayRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDtoList stake_dto_two_list = 3; // 方格点二维数组集合
+}
+
+
+// 二次计算-计算标准方格参数请求
+message CalStandardSquareParamReq {
+  required string id = 1;   // 设备id
+  required string task_code = 2; // 任务主键id
+  required DrawStandardSquareParam draw_standard_square_param = 3; // 画标准方格参数
+  required StakeDto stake_dto = 4; // 中桩坐标信息
+  required PointLLH pt = 5;  // 实时坐标
+  required int32 side = 6; // 边桩位置:0-左侧,1-右侧
+}
+
+// 二次计算-计算标准方格参数返回
+message CalStandardSquareParamRes {
+  required string id = 1;   // 设备id
+  optional ErrorCode code = 2;    //返回结果
+  required DrawStandardSquareParam draw_standard_square_param = 3; // 画标准方格参数
+}
+
+// 二次计算-计算放标准方格桩号点信息（中桩-边桩）请求
+message CalSquareWidthStakeReq {
+  required string id = 1;   // 设备id
+  required string task_code = 2; // 任务主键id
+  required DrawStandardSquareParam draw_standard_square_param = 3; // 画标准方格参数
+  required StakeDto stake_dto = 4; // 中桩坐标信息
+  required PointLLH pt = 5;  // 实时坐标
+  required int32 side = 6; // 边桩位置:0-左侧,1-右侧
+}
+
+// 二次计算-计算放标准方格桩号点信息（中桩-边桩）返回
+message CalSquareWidthStakeRes {
+  required string id = 1;   // 设备id
+  optional ErrorCode code = 2;    //返回结果
+  repeated StakeDto stake_dto_list = 3; // 桩号点坐标信息集合
+}
+
+// 二次计算-计算放标准方格边桩点信息（二维数组）请求
+message CalSquareStakeArrayReq {
+    required string id = 1;   // 设备id
+    required string task_code = 2; // 任务主键id
+    required DrawStandardSquareParam draw_standard_square_param = 3; // 画标准方格参数
+    repeated StakeDto stake_dto_list = 4; // 中桩坐标信息
+    required PointLLH pt = 5;  // 实时坐标
+}
+
+// 二次计算-计算放标准方格边桩点信息（二维数组）返回
+message CalSquareStakeArrayRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDtoList stake_dto_two_list = 4; // 方格点二维数组集合
+}
+
+// 二次计算-计算抄平层边桩点信息（二维数组）请求
+message CalLevellingStakeArrayReq {
+    required string id = 1;   // 设备id
+    required string task_code = 2; // 任务主键id
+    required PutLevellingParam put_levelling_param = 3; // 测抄平参数
+    repeated StakeDto stake_dto_list = 4; // 中桩坐标信息
+
+}
+
+// 二次计算-计算抄平边桩点信息（二维数组）返回
+message CalLevellingStakeArrayRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDtoList stake_dto_two_list = 3; // 方格点二维数组集合
+}
+
+// 二次计算-计算放桩辅助请求
+message CalStakesHelpReq {
+    required string id = 1;   // 设备id
+    required string task_code = 2; // 任务主键id
+    required DrawStakesHelpParam draw_stakes_help_param = 3; // 放桩辅参数
+    repeated StakeDto stake_dto_list = 4; // 中桩坐标信息
+    required PointLLH pt = 5;  // 实时坐标
+}
+
+// 二次计算-计算放桩辅助返回
+message CalStakesHelpRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+    repeated StakeDto stake_dto_list = 3; // 桩号点坐标信息集合
+}
+
+//机器人工操作请求
+message RobotManualOperationReq {
+  enum enDirectionType {
+    DIRECTION_TYPE_INVALID = 0xFF;    //无效
+    DIRECTION_TYPE_LEFT = 0x00;    //左操作
+    DIRECTION_TYPE_RIGHT = 0x01;    //右操作
+    DIRECTION_TYPE_FRONT = 0x02;    //前操作
+    DIRECTION_TYPE_AFTER = 0x03;    //后操作
+  }
+  required string id = 1;   // 设备id
+  required enDirectionType vertical_direction = 2;  //纵向操作方向
+  required enDirectionType horizontal_direction = 3;  //横向操作方向
+  required double vertical_value = 4;  //纵向操作值
+  required double horizontal_value = 5; //横向操作值
+}
+
+//机器人工操作返回
+message RobotManualOperationRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+}
+
+ // 自动驾驶模式参数（目前下发中桩坐标数据）
+message RobotAutopilotModeReq{
+    repeated PlaneCoordinatesParams plane_coordinates_params = 1;  // 平面坐标数据
+}
+
+// 平面坐标数据
+message PlaneCoordinatesParams {
+    required double x = 1; // 坐标X
+    required double y = 2; // 坐标Y
+    optional double Z = 3; // 高程
+    required double angle = 4; // 方位角
+}
+
+//机器自动驾驶操作返回
+message RobotAutopilotModeRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+}
+
+// 机器人喷粉做工操作
+message RobotDustingNotify{
+    enum DustingSwitchType {
+      switch_close = 0x00;    // 喷粉关闭
+      switch_open = 0x01;    //  喷粉开启
+    }
+    required string id = 1;   // 机器人id
+    optional RobotSiloParams silo_params = 2; // 料仓粉料参数
+    required RobotDustingSliderParams dusting_slider_params = 3; // 喷粉滑杆参数
+    required DustingSwitchType dusting_switch_type = 4; // 喷粉开关类型
+}
+
+// 料仓参数
+message RobotSiloParams{
+    required double powder_total = 1; // 粉料总量
+    required double powder_margin = 2; // 粉料余量
+}
+
+// 喷粉滑杆参数
+message RobotDustingSliderParams{
+    required double offset_x = 1;  // x轴方向偏差
+    required double offset_y = 2;  // y轴方向偏差
+}
+// 坐标转换-四参数
+message FourParam{
+    required double dx = 1;  // x轴偏移
+    required double dy = 2;  // y轴偏移
+    required double scale = 3;  // 形变因子 1+m
+    required double rotate = 4;  // 转角 单位:度
+}
+
+// 坐标转换-投影参数
+message ProjectionParam{
+    required string projection_name = 1;  // 投影名称
+    required double scale_factor = 2;  // 长度比
+    required double central_meridian = 3;  // 中央子午线
+    required double latitude_of_origin = 4;  // 基准纬度
+    required double false_easting = 5;  // 东向加常数
+    required double false_northing = 6;  // 北向加常数
+    required double height = 7;  // 投影面高
+}
+
+// 坐标转换-坐标系统参考椭球体
+message EllipsoidParam{
+    required string ellipsoid_name = 1;  // 椭球名称
+    required double macro_axis = 2;  // 椭球长轴，单位米
+    required double minor_axis = 3;  // 椭球短轴，单位米
+    required double flattening = 4;  // 椭球扁率
+}
+
+// 坐标校准请求
+message CoordinateCalibrationReq{
+    required string id = 1;   // 设备id
+    required PointLLH pt = 2;  // 实时坐标
+    required FourParam four_param = 3; // 四参数 ;
+    required double elevation_fitting = 4; // 高程拟合
+    required ProjectionParam projection_param = 5; // 投影参数
+    required EllipsoidParam ellipsoid_param = 6; // 坐标系统参考椭球体
+}
+
+// 坐标校准请求结果
+message CoordinateCalibrationRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+}
+
+// 写字请求
+message WriteWordReq {
+    required string id = 1;   // 设备id
+    required string word = 2;    //文字
+}
+// 写字返回
+message WriteWordRes {
+    required string id = 1;   // 设备id
+    optional ErrorCode code = 2;    //返回结果
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <pulse>1000</pulse>
+  <init_x>100</init_x>
+  <init_y>300</init_y>
+  <draw_line_x>0</draw_line_x>
+  <draw_line_y>300</draw_line_y>
+</config>

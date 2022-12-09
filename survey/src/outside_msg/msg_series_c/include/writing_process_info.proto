@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package phoenix.msg.localization;
+
+message WritingProcessInfo {
+    required int64 time=1;
+    optional string id = 2;
+    optional string version=3;
+    optional string siteCode =4;
+    optional WritingSys sys=5;
+    optional WritingParams params=6;
+    optional string method=7;
+}
+
+message WritingParams{
+    optional double offset_x = 1[default = 0];
+    optional double offset_y =2[default = 0];
+    optional int32 dusting_switch_type =3[default = 0];
+    optional int32 is_move =4[default = 0];
+    optional int32 add_material_status =5[default = 0];
+}
+
+message WritingSys{
+    optional int32 ack =1[default = 0];
+}
+

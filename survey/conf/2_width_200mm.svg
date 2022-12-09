@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="240mm"
+   height="430mm"
+   viewBox="0 0 240 430"
+   version="1.1"
+   id="svg18"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="2_width_200mm.svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-991.54106"
+     inkscape:cy="788.57142"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1869"
+     inkscape:window-height="1027"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,133)">
+    <g
+       aria-label="2"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:413.35778809px;line-height:813.69647217px;font-family:Ani;-inkscape-font-specification:Ani;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.15290523"
+       id="text11"
+       transform="translate(0,-70)">
+      <path
+         d="M 50.770641,6.8532178 H 203.9633 L 187.61467,-20.798158 H 31.19266 Z M 45.72477,135.62386 H 199.11926 L 182.5688,107.77065 H 26.146788 Z M 229.99999,114.02753 228.99082,0.3945024 201.33944,12.706429 202.34862,128.76147 Z M 43.100917,287 H 196.49541 L 179.94495,259.14679 H 23.72477 Z M 38.862384,249.25688 37.651375,135.62386 9.9999999,147.93578 11.211009,263.99083 Z"
+         style="stroke-width:2.15290523"
+         id="path13"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>

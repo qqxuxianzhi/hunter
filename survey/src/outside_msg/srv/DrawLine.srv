@@ -1,0 +1,15 @@
+#request constants
+string index
+#开启 true 和关闭 false
+bool status
+# 线类型 0：实线 1：虚线 2：方格
+int32 type
+# 虚线间隔 0: 实线 value：虚线
+float64 distence
+#第一个点的设计坐标
+float64 lon
+float64 lat
+---
+#response constants
+string index
+bool status

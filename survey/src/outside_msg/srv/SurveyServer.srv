@@ -1,0 +1,11 @@
+#request constants
+string index
+float64 lon
+float64 lat
+float64 height
+---
+#response constants
+string index
+float64 lon
+float64 lat
+float64 height
